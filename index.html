@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sama Onaizah International School - Student Evaluation Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Performance Diagram -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+            #reportCardPrintArea { box-shadow: none !important; border: none !important; padding: 0 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col">
+
+    <!-- Top Header Navigation -->
+    <header class="gradient-header text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white p-1 rounded-xl shadow-md w-12 h-12 flex items-center justify-center overflow-hidden">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%231e3a8a'/><text x='50' y='55' font-size='14' fill='white' text-anchor='middle' font-weight='bold'>SAMA</text></svg>" onerror="this.src='https://placehold.co/100x100/1e3a8a/ffffff?text=SAMA'" alt="Sama Logo" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <h1 class="font-bold text-xl tracking-tight">Sama Onaizah International School</h1>
+                    <p class="text-xs text-blue-100 font-medium">Monthly Student Evaluation & Academic Portal</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="resetToRoleSelection()" id="logoutBtn" class="hidden inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-medium px-3.5 py-2 rounded-lg text-sm transition-all border border-white/20">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Switch Role / Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6">
+
+        <!-- 1. Role Selection Gateway -->
+        <section id="roleSelectionView" class="py-12">
+            <div class="max-w-4xl mx-auto text-center space-y-8">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 font-semibold text-xs rounded-full uppercase tracking-wider mb-3">Academic Portal Gateway</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">Select Your Portal</h2>
+                    <p class="text-slate-600 mt-2 text-sm sm:text-base">Choose your role to access teacher grading matrices, official PDF-style student reports, or admin management.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                    <!-- Teacher Portal Card -->
+                    <div onclick="showTeacherLogin()" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group transform hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 group-hover:text-blue-600 transition-colors">Teacher Portal</h3>
+                        <p class="text-xs text-slate-500 mt-2">Evaluate assigned classes across the 5 core criteria and select automated comment banks.</p>
+                    </div>
+
+                    <!-- Student / Parent Portal Card -->
+                    <div onclick="showStudentLogin()" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group transform hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 group-hover:text-emerald-600 transition-colors">Student / Parent</h3>
+                        <p class="text-xs text-slate-500 mt-2">View secure individual monthly evaluation reports in official report layout with multi-month diagrams.</p>
+                    </div>
+
+                    <!-- Admin Portal Card -->
+                    <div onclick="showAdminLogin()" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group transform hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 group-hover:text-purple-600 transition-colors">Admin Dashboard</h3>
+                        <p class="text-xs text-slate-500 mt-2">Manage teachers, students, passcodes, subjects, class assignments, and CSV imports.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Login Card -->
+        <section id="adminLoginSection" class="hidden max-w-md mx-auto py-12">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 space-y-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mx-auto text-xl mb-3">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Admin Authentication</h3>
+                    <p class="text-xs text-slate-500 mt-1">Enter administrative passcode (`7890`)</p>
+                </div>
+                <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Passcode</label>
+                        <input type="password" id="adminPassInput" required placeholder="Enter passcode" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors shadow">Access Admin Dashboard</button>
+                    <button type="button" onclick="resetToRoleSelection()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 rounded-lg text-xs">Back to Role Choice</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Teacher Login Card -->
+        <section id="teacherLoginSection" class="hidden max-w-md mx-auto py-12">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 space-y-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto text-xl mb-3">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Teacher Sign In</h3>
+                    <p class="text-xs text-slate-500 mt-1">Select your name and enter your passcode</p>
+                </div>
+                <form onsubmit="handleTeacherLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Select Teacher</label>
+                        <select id="teacherSelectInput" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 text-sm bg-white">
+                            <option value="">-- Choose Teacher --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Passcode</label>
+                        <input type="password" id="teacherPassInput" required placeholder="Enter passcode" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors shadow">Sign In to Teacher Portal</button>
+                    <button type="button" onclick="resetToRoleSelection()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 rounded-lg text-xs">Back to Role Choice</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Student Login Card -->
+        <section id="studentLoginSection" class="hidden max-w-md mx-auto py-12">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 space-y-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto text-xl mb-3">
+                        <i class="fa-solid fa-user-lock"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Student & Parent Portal</h3>
+                    <p class="text-xs text-slate-500 mt-1">Enter your student passcode to view report securely</p>
+                </div>
+                <form onsubmit="handleStudentLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Select Student</label>
+                        <select id="studentSelectInput" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm bg-white">
+                            <option value="">-- Choose Student --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Student Passcode</label>
+                        <input type="password" id="studentPassInput" required placeholder="Enter secret passcode" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors shadow">View Evaluation Report</button>
+                    <button type="button" onclick="resetToRoleSelection()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 rounded-lg text-xs">Back to Role Choice</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard View -->
+        <section id="adminDashboardView" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Admin Management Dashboard</h2>
+                    <p class="text-xs text-slate-500">Manage teachers, student passcodes, class assignments, and subjects.</p>
+                </div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+                    <i class="fa-solid fa-shield-cat"></i> Admin Session Active
+                </span>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="border-b border-slate-200 bg-slate-50 px-4 pt-3 flex flex-wrap gap-2">
+                    <button onclick="switchAdminTab('teachers')" id="tabBtnTeachers" class="px-4 py-2 text-xs font-semibold border-b-2 border-purple-600 text-purple-600">Teachers Management</button>
+                    <button onclick="switchAdminTab('students')" id="tabBtnStudents" class="px-4 py-2 text-xs font-semibold text-slate-500 border-b-2 border-transparent">Students Directory & Passcodes</button>
+                    <button onclick="switchAdminTab('subjects')" id="tabBtnSubjects" class="px-4 py-2 text-xs font-semibold text-slate-500 border-b-2 border-transparent">Subjects & Levels</button>
+                    <button onclick="switchAdminTab('reports')" id="tabBtnReports" class="px-4 py-2 text-xs font-semibold text-slate-500 border-b-2 border-transparent">Class Reports Export</button>
+                </div>
+
+                <!-- Teachers Tab -->
+                <div id="adminTabTeachers" class="p-6 space-y-4">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <h3 class="font-bold text-slate-800 text-sm">Teachers & Assigned Classes</h3>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="downloadTeacherTemplate()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 border border-slate-300">
+                                <i class="fa-solid fa-download"></i> Download Template (.CSV)
+                            </button>
+                            <label class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-sm">
+                                <i class="fa-solid fa-file-arrow-up"></i> Bulk Upload CSV
+                                <input type="file" accept=".csv" onchange="handleTeacherCsvUpload(event)" class="hidden">
+                            </label>
+                            <button onclick="openAddTeacherModal()" class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> Add Teacher
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                                <tr>
+                                    <th class="p-3">Teacher Name</th>
+                                    <th class="p-3">Passcode</th>
+                                    <th class="p-3">Subject</th>
+                                    <th class="p-3">Assigned Classes</th>
+                                    <th class="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachersTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Students Tab -->
+                <div id="adminTabStudents" class="p-6 space-y-4 hidden">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <h3 class="font-bold text-slate-800 text-sm">Enrolled Students & Report Passcodes</h3>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="downloadStudentTemplate()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 border border-slate-300">
+                                <i class="fa-solid fa-download"></i> Download Template (.CSV)
+                            </button>
+                            <label class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-sm">
+                                <i class="fa-solid fa-file-arrow-up"></i> Bulk Upload CSV
+                                <input type="file" accept=".csv" onchange="handleStudentCsvUpload(event)" class="hidden">
+                            </label>
+                            <button onclick="openAddStudentModal()" class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-plus"></i> Add Student
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-slate-50 text-slate-600 border-b border-slate-200 font-semibold">
+                                <tr>
+                                    <th class="p-3">Student Name</th>
+                                    <th class="p-3">Grade Level</th>
+                                    <th class="p-3">School Branch</th>
+                                    <th class="p-3">Secret Report Passcode</th>
+                                    <th class="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Subjects Tab -->
+                <div id="adminTabSubjects" class="p-6 space-y-4 hidden">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <h3 class="font-bold text-slate-800 text-sm">Active School Curriculum & Levels</h3>
+                        <button onclick="openAddSubjectModal()" class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Add Subject
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Subjects Management Box -->
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                            <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Configured Subjects</h4>
+                            <div class="overflow-x-auto border border-slate-200 rounded-lg bg-white">
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 text-slate-600 border-b border-slate-200 font-semibold">
+                                        <tr>
+                                            <th class="p-2.5">Subject Name</th>
+                                            <th class="p-2.5 text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="subjectsTableBody" class="divide-y divide-slate-100"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Grades & Classes Management Box -->
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Configured Grades & Classes</h4>
+                                <button onclick="openAddClassModal()" class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-2.5 py-1 rounded-md text-[11px] flex items-center gap-1">
+                                    <i class="fa-solid fa-plus"></i> Add Grade/Class
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto border border-slate-200 rounded-lg bg-white">
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 text-slate-600 border-b border-slate-200 font-semibold">
+                                        <tr>
+                                            <th class="p-2.5">Grade / Class Name</th>
+                                            <th class="p-2.5 text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="classesTableBody" class="divide-y divide-slate-100"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Reports Tab -->
+                <div id="adminTabReports" class="p-6 space-y-4 hidden">
+                    <div class="flex flex-wrap justify-between items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Class & Section Report Export Dashboard</h3>
+                            <p class="text-xs text-slate-500">Generate and print official report cards for all students in a selected Grade and Section.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Select Branch / Section</label>
+                                id="adminReportSectionFilter" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white font-medium">
+                                    <option value="International Girls Section">International Girls Section</option>
+                                    <option value="International Boys Section">International Boys Section</option>
+                                    <option value="Egyptian Girls Section">Egyptian Girls Section</option>
+                                    <option value="Egyptian Boys Section">Egyptian Boys Section</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Select Grade / Class</label>
+                                <select id="adminReportClassFilter" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white font-medium">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Month</label>
+                                <select id="adminReportMonthSelect" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white font-medium">
+                                    <option value="2026-09 (Sep)">September 2026</option>
+                                    <option value="2026-10 (Oct)" selected>October 2026</option>
+                                    <option value="2026-11 (Nov)">November 2026</option>
+                                    <option value="2026-12 (Dec)">December 2026</option>
+                                </select>
+                            </div>
+                            <button onclick="generateAdminClassReports()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs shadow mt-4">
+                                <i class="fa-solid fa-file-pdf mr-1"></i> Generate & Print All
+                            </button>
+                        </div>
+                    </div>
+                    <div id="adminClassReportsContainer" class="space-y-8 pt-4">
+                        <div class="text-center text-slate-400 py-12 border-2 border-dashed border-slate-200 rounded-2xl">
+                            <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+                            <p class="text-xs">Select a Grade and Section above and click "Generate & Print All" to render official reports.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teacher Evaluation Dashboard View -->
+        <section id="teacherDashboardView" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <div>
+                    <h2 id="teacherWelcomeTitle" class="text-xl font-bold text-slate-900">Teacher Portal</h2>
+                    <p id="teacherSubjectBadge" class="text-xs text-slate-500 font-medium"></p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div>
+                        <label class="block text-[10px] font-semibold text-slate-500 uppercase">Select Class</label>
+                        <select id="teacherClassFilter" onchange="loadTeacherEvaluationMatrix()" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white font-medium"></select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-semibold text-slate-500 uppercase">Evaluation Month</label>
+                        <select id="evalMonthSelect" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white font-medium">
+                            <option value="2026-09 (Sep)">2026-09 (Sep)</option>
+                            <option value="2026-10 (Oct)" selected>2026-10 (Oct)</option>
+                            <option value="2026-11 (Nov)">2026-11 (Nov)</option>
+                            <option value="2026-12 (Dec)">2026-12 (Dec)</option>
+                        </select>
+                    </div>
+                    <button onclick="saveTeacherEvaluations()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-xs shadow">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> Save Evaluations
+                    </button>
+                </div>
+            </div>
+
+            <!-- Student Evaluation Matrix -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-sm">Student Evaluation Matrix (5 Core Criteria)</h3>
+                    <span class="text-xs text-slate-500">Ratings: Advanced | Good | Acceptable | Followup-Needed</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-slate-100 text-slate-700 border-b border-slate-200 font-semibold">
+                            <tr>
+                                <th class="p-3">Student Name</th>
+                                <th class="p-3">1. Academic Level</th>
+                                <th class="p-3">2. Homework</th>
+                                <th class="p-3">3. Participation</th>
+                                <th class="p-3">4. Attendance</th>
+                                <th class="p-3">5. Behavior</th>
+                                <th class="p-3">Subject Comment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="evaluationMatrixBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Report & Diagram View -->
+        <section id="studentReportView" class="hidden space-y-6">
+            <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-sm no-print">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Official Monthly Student Evaluation Report</h2>
+                    <p class="text-xs text-slate-500">تقرير التقييم الشهري للطالب</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="reportMonthSelect" onchange="renderStudentReportCard()" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white font-medium">
+                        <option value="2026-09 (Sep)">September 2026</option>
+                        <option value="2026-10 (Oct)" selected>October 2026</option>
+                        <option value="2026-11 (Nov)">November 2026</option>
+                        <option value="2026-12 (Dec)">December 2026</option>
+                    </select>
+                    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow">
+                        <i class="fa-solid fa-print mr-1"></i> Print / Export PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Card Container matching PDF Spec -->
+            <div id="reportCardPrintArea" class="bg-white rounded-2xl shadow-sm border border-slate-300 p-6 sm:p-8 space-y-6 text-slate-800 font-sans">
+                
+                <!-- PDF Header Section -->
+                <div class="border-b-2 border-blue-900 pb-4 flex justify-between items-start">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-14 h-14 bg-blue-900 text-white rounded-xl flex items-center justify-center font-black text-sm tracking-widest shadow">
+                            IGS
+                        </div>
+                        <div>
+                            <h3 class="font-black text-base text-blue-900 tracking-wide uppercase">Sama Onaizah International School</h3>
+                            <p id="repStudentSchoolBranch" class="text-xs font-bold text-slate-600">International Girls' Section</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <h4 class="font-black text-base text-slate-900">Monthly Student Evaluation Report</h4>
+                        <p class="text-xs font-bold text-slate-600 font-arabic">تقرير التقييم الشهري للطالب</p>
+                        <p id="repMonthNameDisplay" class="text-xs font-semibold text-blue-700 mt-1">September 2026</p>
+                    </div>
+                </div>
+
+                <!-- Student Metadata Card -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+                    <div>
+                        <span class="block text-[10px] text-slate-500 font-semibold uppercase">Student الطالب</span>
+                        <span id="repStudentName" class="font-bold text-slate-900 text-sm"></span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] text-slate-500 font-semibold uppercase">Class الصف</span>
+                        <span id="repStudentClass" class="font-bold text-slate-900 text-sm"></span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] text-slate-500 font-semibold uppercase">Overall Level المستوى العام</span>
+                        <span id="repOverallLevelBadge" class="inline-block mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-800"></span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] text-slate-500 font-semibold uppercase">Overall Average الدرجة</span>
+                        <span id="repOverallAvgScore" class="font-bold text-slate-900 text-sm font-mono"></span>
+                    </div>
+                </div>
+
+                <!-- 1. Level by Subject and KPI Table -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">1. Level by subject and KPI <span class="text-slate-500 font-normal font-arabic ml-1">المستوى حسب المادة والمؤشر</span></h4>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border border-slate-200 rounded-lg">
+                            <thead class="bg-blue-900 text-white font-semibold">
+                                <tr>
+                                    <th class="p-2.5 border-r border-blue-800">Subject <br><span class="text-[10px] font-normal font-arabic">المادة</span></th>
+                                    <th class="p-2.5 border-r border-blue-800">Academic <br><span class="text-[10px] font-normal font-arabic">التحصيل الأكاديمي</span></th>
+                                    <th class="p-2.5 border-r border-blue-800">Participation <br><span class="text-[10px] font-normal font-arabic">المشاركة والتفاعل</span></th>
+                                    <th class="p-2.5 border-r border-blue-800">Assignments <br><span class="text-[10px] font-normal font-arabic">الواجبات والمهام</span></th>
+                                    <th class="p-2.5 border-r border-blue-800">Behavior <br><span class="text-[10px] font-normal font-arabic">السلوك والانضباط</span></th>
+                                    <th class="p-2.5 border-r border-blue-800">Organization <br><span class="text-[10px] font-normal font-arabic">التنظيم</span></th>
+                                    <th class="p-2.5">Average <br><span class="text-[10px] font-normal font-arabic">الدرجة</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
+                            <tfoot id="reportTableFoot" class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300"></tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. Top Strengths & 3. Areas Needing Follow-up Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-emerald-50/50 border border-emerald-200 p-4 rounded-xl space-y-2">
+                        <h4 class="font-bold text-xs text-emerald-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-award text-emerald-600"></i>
+                            <span>2. Top Strengths <span class="font-arabic font-normal text-slate-600">نقاط القوة</span></span>
+                        </h4>
+                        <div id="repTopStrengthsList" class="text-xs text-slate-700 space-y-1"></div>
+                    </div>
+
+                    <div class="bg-amber-50/50 border border-amber-200 p-4 rounded-xl space-y-2">
+                        <h4 class="font-bold text-xs text-amber-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                            <span>3. Areas Needing Follow-up <span class="font-arabic font-normal text-slate-600">مجالات تحتاج إلى متابعة</span></span>
+                        </h4>
+                        <div id="repFollowupList" class="text-xs text-slate-700 space-y-1"></div>
+                    </div>
+                </div>
+
+                <!-- 4. Subject Comments -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">4. Subject Comments <span class="text-slate-500 font-normal font-arabic ml-1">ملاحظات المواد</span></h4>
+                    <div id="repSubjectCommentsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                </div>
+
+                <!-- Multi-Month Performance Diagram -->
+                <div class="pt-4 border-t border-slate-200">
+                    <h4 class="font-bold text-sm text-slate-800 mb-3">Multi-Month Performance Trend Diagram <span class="font-arabic text-xs font-normal text-slate-500">رسم بياني لتطور الأداء خلال الأشهر</span></h4>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 h-64">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Footer Signatures & Scale Legend -->
+                <div class="pt-6 border-t border-slate-200 space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                        <div class="border-b sm:border-b-0 sm:border-r border-slate-200 pb-3 sm:pb-0 sm:pr-3">
+                            <span class="block text-slate-500 font-medium">Guardian suggestions <span class="font-arabic">مقترحات ولي الأمر</span></span>
+                            <div class="h-12 border border-dashed border-slate-300 rounded-lg mt-1 p-1 bg-slate-50/50"></div>
+                        </div>
+                        <div class="border-b sm:border-b-0 sm:border-r border-slate-200 pb-3 sm:pb-0 sm:pr-3">
+                            <span class="block text-slate-500 font-medium">Guardian signature <span class="font-arabic">توقيع ولي الأمر</span></span>
+                            <div class="h-12 border border-b-2 border-slate-300 rounded-b-lg mt-1 flex items-end px-2 pb-1 text-slate-400">Sign here...</div>
+                        </div>
+                        <div>
+                            <span class="block text-slate-500 font-medium">Date <span class="font-arabic">التاريخ</span></span>
+                            <span id="repPrintDate" class="font-bold text-slate-800 mt-2 block">October 13, 2026</span>
+                        </div>
+                    </div>
+
+                    <!-- Grading Scale Legend -->
+                    <div class="bg-slate-100 p-3 rounded-lg text-[11px] text-slate-600 flex flex-wrap justify-between items-center gap-2">
+                        <span class="font-bold text-slate-700">Scale / سلم التقييم:</span>
+                        <span>1 = Follow-up needed (يحتاج متابعة)</span>
+                        <span>2 = Acceptable (مقبول)</span>
+                        <span>3 = Good (جيد)</span>
+                        <span>4 = Advanced (متقدم)</span>
+                        <span class="text-blue-800 font-semibold">Overall: Support &lt;1.75 | Acceptable 1.75-2.49 | Good 2.5-3.24 | Advanced &gt;3.25</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modals for Admin Add/Edit -->
+    <div id="teacherModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full space-y-4">
+            <h3 id="teacherModalTitle" class="font-bold text-lg text-slate-900">Add New Teacher</h3>
+            <form onsubmit="saveTeacherForm(event)" class="space-y-3">
+                <input type="hidden" id="editTeacherId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Teacher Full Name</label>
+                    <input type="text" id="modalTeacherName" required class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Passcode</label>
+                    <input type="password" id="modalTeacherPass" required class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Subject</label>
+                    <select id="modalTeacherSubject" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white">
+                        <option value="Arabic">Arabic</option>
+                        <option value="English">English</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">School Branch / Section</label>
+                    <select id="modalTeacherSection" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white">
+                        <option value="International Girls Section">International Girls Section</option>
+                        <option value="International Boys Section">International Boys Section</option>
+                        <option value="Egyptian Girls Section">Egyptian Girls Section</option>
+                        <option value="Egyptian Boys Section">Egyptian Boys Section</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Assigned Classes (Hold Ctrl to select multiple)</label>
+                    <select id="modalTeacherClasses" multiple class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white h-28">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeTeacherModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-xs font-semibold">Save Teacher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="studentModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full space-y-4">
+            <h3 id="studentModalTitle" class="font-bold text-lg text-slate-900">Add New Student</h3>
+            <form onsubmit="saveStudentForm(event)" class="space-y-3">
+                <input type="hidden" id="editStudentId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Student Full Name</label>
+                    <input type="text" id="modalStudentName" required class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Grade Level / Class</label>
+                    <select id="modalStudentClass" required class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">School Branch / Section</label>
+                    <select id="modalStudentBranch" required class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white">
+                        <option value="International Girls' Section">International Girls' Section</option>
+                        <option value="International Boys' Section">International Boys' Section</option>
+                        <option value="Egyptian Curriculum Girls' Section">Egyptian Curriculum Girls' Section</option>
+                        <option value="Egyptian Curriculum Boys' Section">Egyptian Curriculum Boys' Section</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Report Passcode</label>
+                    <input type="text" id="modalStudentPass" required class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-mono">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeStudentModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-xs font-semibold">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Subject Modal -->
+    <div id="subjectModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4">
+            <h3 class="font-bold text-lg text-slate-900">Add New Subject</h3>
+            <form onsubmit="saveSubjectForm(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Subject Name</label>
+                    <input type="text" id="modalSubjectName" required placeholder="e.g. Computer Science" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeSubjectModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-xs font-semibold">Save Subject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Class/Grade Modal -->
+    <div id="classModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4">
+            <h3 class="font-bold text-lg text-slate-900">Add New Grade / Class</h3>
+            <form onsubmit="saveClassForm(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Grade / Class Name</label>
+                    <input type="text" id="modalClassNameInput" required placeholder="e.g. 10A or Grade 10" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeClassModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-xs font-semibold">Save Class</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-4 text-center text-xs text-slate-500 no-print">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <p>&copy; 2026 Sama Onaizah International School. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let allClasses = JSON.parse(localStorage.getItem('sama_classes')) || [
+            "1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", 
+            "5A", "5B", "6A", "6B", "7A", "7B", "8A", "8B", "9A", "9B"
+        ];
+
+        let schoolBranches = [
+            "International Girls Section",
+            "International Boys Section",
+            "Egyptian Girls Section",
+            "Egyptian Boys Section"
+        ];
+
+        let subjects = JSON.parse(localStorage.getItem('sama_subjects')) || [
+            "Arabic", "English", "Math", "Science"
+        ];
+
+        let commentBank = [
+            "Demonstrates outstanding understanding and consistently produces high-quality work. / يظهر فهمًا متميزًا وينتج باستمرار أعمالاً عالية الجودة.",
+            "Excels in this subject and is a positive role model for classmates. / يتفوق في هذه المادة ويُعد نموذجاً إيجابياً لزملاؤه.",
+            "Works hard and produces reliable work. A little more practice will lift performance. / يعمل بجد وينتج أعمالاً موثوقة. القليل من التدريب الإضافي سيحسن الأداء.",
+            "Shows good understanding and steady progress this month. / يُظهر فهماً جيداً وتقدماً ثابتاً هذا الشهر.",
+            "Participates well and meets expectations. Keep building confidence. / يشارك بشكل جيد ويلبي التوقعات. استمر في بناء الثقة."
+        ];
+
+        let teachers = JSON.parse(localStorage.getItem('sama_teachers')) || [
+            { id: 1, name: "Ms. Fatima Al-Sayed", pass: "1234", subject: "Arabic", section: "International Girls Section", classes: ["1A", "1B", "2A"] },
+            { id: 2, name: "Mr. John Smith", pass: "1234", subject: "English", section: "International Boys Section", classes: ["3A", "3B", "4A"] },
+            { id: 3, name: "Mr. Ahmed Ali", pass: "1234", subject: "Math", section: "Egyptian Boys Section", classes: ["5A", "5B", "6A"] }
+        ];
+
+        let students = JSON.parse(localStorage.getItem('sama_students')) || [
+            { id: "S101", name: "Ammar Metab Barakah bin medlj", class: "1A", section: "International Girls Section", pass: "1001" },
+            { id: "S102", name: "Anas Bandr Alrashdi", class: "1A", section: "International Boys Section", pass: "1002" },
+            { id: "S103", name: "Abdullah Emad Al-Saghir", class: "3A", section: "International Boys Section", pass: "1003" },
+            { id: "S104", name: "Basam Ahmed Saleh", class: "5A", section: "Egyptian Boys Section", pass: "1004" }
+        ];
+
+        let evaluations = JSON.parse(localStorage.getItem('sama_evaluations')) || {};
+
+        let currentActiveTeacher = null;
+        let currentActiveStudent = null;
+        let performanceChartInstance = null;
+
+        function openAddTeacherModal() {
+            document.getElementById('teacherModalTitle').innerText = "Add New Teacher";
+            document.getElementById('editTeacherId').value = "";
+            document.getElementById('modalTeacherName').value = "";
+            document.getElementById('modalTeacherPass').value = "";
+            
+            const classesSelect = document.getElementById('modalTeacherClasses');
+            classesSelect.innerHTML = allClasses.map(cls => `<option value="${cls}">Class ${cls}</option>`).join('');
+            
+            document.getElementById('teacherModal').classList.remove('hidden');
+        }
+
+        function openEditTeacherModal(id) {
+            const t = teachers.find(item => item.id === id);
+            if (!t) return;
+            document.getElementById('teacherModalTitle').innerText = "Edit Teacher";
+            document.getElementById('editTeacherId').value = t.id;
+            document.getElementById('modalTeacherName').value = t.name;
+            document.getElementById('modalTeacherPass').value = t.pass;
+            document.getElementById('modalTeacherSubject').value = t.subject;
+            document.getElementById('modalTeacherSection').value = t.section || schoolBranches[0];
+
+            const classesSelect = document.getElementById('modalTeacherClasses');
+            classesSelect.innerHTML = allClasses.map(cls => `<option value="${cls}" ${t.classes.includes(cls) ? 'selected' : ''}>Class ${cls}</option>`).join('');
+
+            document.getElementById('teacherModal').classList.remove('hidden');
+        }
+
+        function closeTeacherModal() {
+            document.getElementById('teacherModal').classList.add('hidden');
+        }
+
+        function saveTeacherForm(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editTeacherId').value;
+            const name = document.getElementById('modalTeacherName').value.trim();
+            const pass = document.getElementById('modalTeacherPass').value.trim();
+            const subject = document.getElementById('modalTeacherSubject').value;
+            const section = document.getElementById('modalTeacherSection').value;
+            
+            const classSelect = document.getElementById('modalTeacherClasses');
+            const selectedClasses = Array.from(classSelect.selectedOptions).map(opt => opt.value);
+
+            if (editId) {
+                const t = teachers.find(item => item.id == editId);
+                if (t) {
+                    t.name = name;
+                    t.pass = pass;
+                    t.subject = subject;
+                    t.section = section;
+                    t.classes = selectedClasses;
+                }
+            } else {
+                const newId = teachers.length > 0 ? Math.max(...teachers.map(t => t.id)) + 1 : 1;
+                teachers.push({
+                    id: newId,
+                    name: name,
+                    pass: pass,
+                    subject: subject,
+                    section: section,
+                    classes: selectedClasses
+                });
+            }
+
+            saveData();
+            renderAdminTables();
+            closeTeacherModal();
+        }
+
+        function deleteTeacher(id) {
+            if (confirm("Are you sure you want to delete this teacher?")) {
+                teachers = teachers.filter(t => t.id !== id);
+                saveData();
+                renderAdminTables();
+            }
+        }
+
+        function openAddStudentModal() {
+            document.getElementById('studentModalTitle').innerText = "Add New Student";
+            document.getElementById('editStudentId').value = "";
+            document.getElementById('modalStudentName').value = "";
+            document.getElementById('modalStudentPass').value = Math.floor(1000 + Math.random() * 9000);
+
+            const classSelect = document.getElementById('modalStudentClass');
+            classSelect.innerHTML = allClasses.map(cls => `<option value="${cls}">Class ${cls}</option>`).join('');
+
+            document.getElementById('studentModal').classList.remove('hidden');
+        }
+
+        function openEditStudentModal(id) {
+            const s = students.find(item => item.id === id);
+            if (!s) return;
+            document.getElementById('studentModalTitle').innerText = "Edit Student";
+            document.getElementById('editStudentId').value = s.id;
+            document.getElementById('modalStudentName').value = s.name;
+            document.getElementById('modalStudentPass').value = s.pass;
+            document.getElementById('modalStudentBranch').value = s.section || schoolBranches[0];
+
+            const classSelect = document.getElementById('modalStudentClass');
+            classSelect.innerHTML = allClasses.map(cls => `<option value="${cls}" ${s.class === cls ? 'selected' : ''}>Class ${cls}</option>`).join('');
+
+            document.getElementById('studentModal').classList.remove('hidden');
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentModal').classList.add('hidden');
+        }
+
+        function saveStudentForm(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editStudentId').value;
+            const name = document.getElementById('modalStudentName').value.trim();
+            const cls = document.getElementById('modalStudentClass').value;
+            const section = document.getElementById('modalStudentBranch').value;
+            const pass = document.getElementById('modalStudentPass').value.trim();
+
+            if (editId) {
+                const s = students.find(item => item.id === editId);
+                if (s) {
+                    s.name = name;
+                    s.class = cls;
+                    s.section = section;
+                    s.pass = pass;
+                }
+            } else {
+                const nextNum = students.length > 0 ? Math.max(...students.map(s => parseInt(s.id.replace('S','')) || 100)) + 1 : 101;
+                students.push({
+                    id: "S" + nextNum,
+                    name: name,
+                    class: cls,
+                    section: section,
+                    pass: pass
+                });
+            }
+
+            saveData();
+            renderAdminTables();
+            closeStudentModal();
+        }
+
+        function deleteStudent(id) {
+            if (confirm("Are you sure you want to delete this student?")) {
+                students = students.filter(s => s.id !== id);
+                saveData();
+                renderAdminTables();
+            }
+        }
+
+        function openAddSubjectModal() {
+            document.getElementById('modalSubjectName').value = "";
+            document.getElementById('subjectModal').classList.remove('hidden');
+        }
+
+        function closeSubjectModal() {
+            document.getElementById('subjectModal').classList.add('hidden');
+        }
+
+        function saveSubjectForm(e) {
+            e.preventDefault();
+            const subName = document.getElementById('modalSubjectName').value.trim();
+            if (subName && !subjects.includes(subName)) {
+                subjects.push(subName);
+                saveData();
+                renderAdminTables();
+            }
+            closeSubjectModal();
+        }
+
+        function deleteSubject(sub) {
+            if (confirm(`Delete subject ${sub}?`)) {
+                subjects = subjects.filter(s => s !== sub);
+                saveData();
+                renderAdminTables();
+            }
+        }
+
+        function openAddClassModal() {
+            document.getElementById('modalClassNameInput').value = "";
+            document.getElementById('classModal').classList.remove('hidden');
+        }
+
+        function closeClassModal() {
+            document.getElementById('classModal').classList.add('hidden');
+        }
+
+        function saveClassForm(e) {
+            e.preventDefault();
+            const clsName = document.getElementById('modalClassNameInput').value.trim();
+            if (clsName && !allClasses.includes(clsName)) {
+                allClasses.push(clsName);
+                saveData();
+                renderAdminTables();
+                populateAdminReportFilters();
+            }
+            closeClassModal();
+        }
+
+        function deleteClass(cls) {
+            if (confirm(`Delete class ${cls}?`)) {
+                allClasses = allClasses.filter(c => c !== cls);
+                saveData();
+                renderAdminTables();
+                populateAdminReportFilters();
+            }
+        }
+
+        // Bulk Template Download Functions
+        function downloadTeacherTemplate() {
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                "Name,Passcode,Subject,Section,Classes\n" +
+                "Ms. Example Teacher,1234,English,\"International Girls Section\",\"1A,1B,2A\"\n" +
+                "Mr. Sample Teacher,5678,Math,\"Egyptian Boys Section\",\"3A,3B\"";
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "sama_teachers_template.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function downloadStudentTemplate() {
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                "Name,Class,Section,Passcode\n" +
+                "Ahmad Khaled Ali,1A,\"International Boys Section\",1001\n" +
+                "Fatima Omar Said,1B,\"International Girls Section\",1002";
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "sama_students_template.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // CSV Upload & Parsing Handlers
+        function handleTeacherCsvUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                if (lines.length <= 1) {
+                    alert("The uploaded CSV file is empty or formatted incorrectly.");
+                    return;
+                }
+
+                let addedCount = 0;
+                for (let i = 1; i < lines.length; i++) {
+                    const row = parseCsvLine(lines[i]);
+                    if (row.length >= 5) {
+                        const name = row[0].trim();
+                        const pass = row[1].trim();
+                        const subject = row[2].trim();
+                        const section = row[3].trim();
+                        const classesStr = row[4].replace(/"/g, '').trim();
+                        const classList = classesStr.split(',').map(c => c.trim()).filter(c => c.length > 0);
+
+                        const newId = teachers.length > 0 ? Math.max(...teachers.map(t => t.id)) + 1 + addedCount : 1 + addedCount;
+                        teachers.push({
+                            id: newId,
+                            name: name,
+                            pass: pass,
+                            subject: subjects.includes(subject) ? subject : "English",
+                            section: schoolBranches.includes(section) ? section : schoolBranches[0],
+                            classes: classList
+                        });
+                        addedCount++;
+                    }
+                }
+
+                saveData();
+                renderAdminTables();
+                alert(`Successfully imported ${addedCount} teachers from CSV!`);
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function handleStudentCsvUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                if (lines.length <= 1) {
+                    alert("The uploaded CSV file is empty or formatted incorrectly.");
+                    return;
+                }
+
+                let addedCount = 0;
+                for (let i = 1; i < lines.length; i++) {
+                    const row = parseCsvLine(lines[i]);
+                    if (row.length >= 4) {
+                        const name = row[0].trim();
+                        const cls = row[1].trim();
+                        const section = row[2].trim();
+                        const pass = row[3].trim();
+
+                        const nextNumericId = students.length > 0 ? Math.max(...students.map(s => parseInt(s.id.replace('S','')) || 100)) + 1 + addedCount : 101 + addedCount;
+                        const newId = "S" + nextNumericId;
+
+                        students.push({
+                            id: newId,
+                            name: name,
+                            class: allClasses.includes(cls) ? cls : "1A",
+                            section: schoolBranches.includes(section) ? section : schoolBranches[0],
+                            pass: pass
+                        });
+                        addedCount++;
+                    }
+                }
+
+                saveData();
+                renderAdminTables();
+                alert(`Successfully imported ${addedCount} students from CSV!`);
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCsvLine(text) {
+            let result = [];
+            let inQuotes = false;
+            let current = '';
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            return result.map(item => item.replace(/^"|"$/g, '').trim());
+        }
+
+        function saveData() {
+            localStorage.setItem('sama_classes', JSON.stringify(allClasses));
+            localStorage.setItem('sama_subjects', JSON.stringify(subjects));
+            localStorage.setItem('sama_teachers', JSON.stringify(teachers));
+            localStorage.setItem('sama_students', JSON.stringify(students));
+            localStorage.setItem('sama_evaluations', JSON.stringify(evaluations));
+        }
+
+        // View Navigators
+        function hideAllSections() {
+            document.getElementById('roleSelectionView').classList.add('hidden');
+            document.getElementById('adminLoginSection').classList.add('hidden');
+            document.getElementById('teacherLoginSection').classList.add('hidden');
+            document.getElementById('studentLoginSection').classList.add('hidden');
+            document.getElementById('adminDashboardView').classList.add('hidden');
+            document.getElementById('teacherDashboardView').classList.add('hidden');
+            document.getElementById('studentReportView').classList.add('hidden');
+        }
+
+        function resetToRoleSelection() {
+            hideAllSections();
+            document.getElementById('roleSelectionView').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            currentActiveTeacher = null;
+            currentActiveStudent = null;
+        }
+
+        function showAdminLogin() {
+            hideAllSections();
+            document.getElementById('adminLoginSection').classList.remove('hidden');
+        }
+
+        function showTeacherLogin() {
+            hideAllSections();
+            const select = document.getElementById('teacherSelectInput');
+            select.innerHTML = '<option value="">-- Choose Teacher --</option>';
+            teachers.forEach(t => {
+                select.innerHTML += `<option value="${t.id}">${t.name} (${t.subject})</option>`;
+            });
+            document.getElementById('teacherLoginSection').classList.remove('hidden');
+        }
+
+        function showStudentLogin() {
+            hideAllSections();
+            const select = document.getElementById('studentSelectInput');
+            select.innerHTML = '<option value="">-- Choose Student --</option>';
+            students.forEach(s => {
+                select.innerHTML += `<option value="${s.id}">${s.name} (Class ${s.class})</option>`;
+            });
+            document.getElementById('studentLoginSection').classList.remove('hidden');
+        }
+
+        // Authentication Handlers
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === '7890') {
+                hideAllSections();
+                document.getElementById('adminDashboardView').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                renderAdminTables();
+                populateAdminReportFilters();
+            } else {
+                alert('Invalid Admin Passcode! (Default: 7890)');
+            }
+        }
+
+        function handleTeacherLogin(e) {
+            e.preventDefault();
+            const teacherId = parseInt(document.getElementById('teacherSelectInput').value);
+            const pass = document.getElementById('teacherPassInput').value;
+            const teacher = teachers.find(t => t.id === teacherId);
+
+            if (teacher && teacher.pass === pass) {
+                currentActiveTeacher = teacher;
+                hideAllSections();
+                document.getElementById('teacherDashboardView').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                document.getElementById('teacherWelcomeTitle').innerText = `Welcome, ${teacher.name}`;
+                document.getElementById('teacherSubjectBadge').innerText = `Subject: ${teacher.subject}`;
+
+                const classSelect = document.getElementById('teacherClassFilter');
+                classSelect.innerHTML = '';
+                teacher.classes.forEach(cls => {
+                    classSelect.innerHTML += `<option value="${cls}">Class ${cls}</option>`;
+                });
+                loadTeacherEvaluationMatrix();
+            } else {
+                alert('Incorrect teacher passcode.');
+            }
+        }
+
+        function handleStudentLogin(e) {
+            e.preventDefault();
+            const studentId = document.getElementById('studentSelectInput').value;
+            const pass = document.getElementById('studentPassInput').value;
+            const student = students.find(s => s.id === studentId);
+
+            if (student && student.pass === pass) {
+                currentActiveStudent = student;
+                hideAllSections();
+                document.getElementById('studentReportView').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                document.getElementById('repStudentName').innerText = student.name;
+                document.getElementById('repStudentClass').innerText = student.class;
+                document.getElementById('repStudentSchoolBranch').innerText = student.branch || "International Section";
+                renderStudentReportCard();
+            } else {
+                alert('Incorrect student passcode.');
+            }
+        }
+
+        // Admin Table Rendering & Management
+        function renderAdminTables() {
+            const tBody = document.getElementById('teachersTableBody');
+            tBody.innerHTML = teachers.map(t => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-medium text-slate-800">${t.name}</td>
+                    <td class="p-3 font-mono text-slate-500">${t.pass}</td>
+                    <td class="p-3 text-slate-700">${t.subject}</td>
+                    <td class="p-3 text-slate-600 font-medium text-[11px]">${t.section || schoolBranches[0]}</td>
+                    <td class="p-3 text-slate-600">${t.classes.join(', ')}</td>
+                    <td class="p-3 text-right space-x-2">
+                        <button onclick="openEditTeacherModal(${t.id})" class="text-blue-600 hover:text-blue-800 font-medium">Edit</button>
+                        <button onclick="deleteTeacher(${t.id})" class="text-rose-600 hover:text-rose-800 font-medium">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            const sBody = document.getElementById('studentsTableBody');
+            sBody.innerHTML = students.map(s => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-medium text-slate-800">${s.name}</td>
+                    <td class="p-3 text-slate-700">${s.class}</td>
+                    <td class="p-3 text-slate-600 text-[11px] font-medium">${s.section || schoolBranches[0]}</td>
+                    <td class="p-3 font-mono text-slate-500">${s.pass}</td>
+                    <td class="p-3 text-right space-x-2">
+                        <button onclick="openEditStudentModal('${s.id}')" class="text-blue-600 hover:text-blue-800 font-medium">Edit</button>
+                        <button onclick="deleteStudent('${s.id}')" class="text-rose-600 hover:text-rose-800 font-medium">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            const subBody = document.getElementById('subjectsTableBody');
+            subBody.innerHTML = subjects.map(sub => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-2.5 font-medium text-slate-800">${sub}</td>
+                    <td class="p-2.5 text-right">
+                        <button onclick="deleteSubject('${sub}')" class="text-rose-600 hover:text-rose-800 font-medium">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            const clsBody = document.getElementById('classesTableBody');
+            clsBody.innerHTML = allClasses.map(cls => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-2.5 font-medium text-slate-800">Class ${cls}</td>
+                    <td class="p-2.5 text-right">
+                        <button onclick="deleteClass('${cls}')" class="text-rose-600 hover:text-rose-800 font-medium">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function populateAdminReportFilters() {
+            const classSelect = document.getElementById('adminReportClassFilter');
+            if (!classSelect) return;
+            classSelect.innerHTML = allClasses.map(cls => `<option value="${cls}">Class ${cls}</option>`).join('');
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById('adminTabTeachers').classList.add('hidden');
+            document.getElementById('adminTabStudents').classList.add('hidden');
+            document.getElementById('adminTabSubjects').classList.add('hidden');
+            document.getElementById('adminTabReports').classList.add('hidden');
+            
+            const btnT = document.getElementById('tabBtnTeachers');
+            const btnS = document.getElementById('tabBtnStudents');
+            const btnSub = document.getElementById('tabBtnSubjects');
+            const btnRep = document.getElementById('tabBtnReports');
+
+            if (btnT) btnT.className = "px-4 py-2 text-xs font-semibold text-slate-500 border-b-2 border-transparent";
+            if (btnS) btnS.className = "px-4 py-2 text-xs font-semibold text-slate-500 border-b-2 border-transparent";
+            if (btnSub) btnSub.className = "px-4 py-2 text-xs font-semibold text-slate-500 border-b-2 border-transparent";
+            if (btnRep) btnRep.className = "px-4 py-2 text-xs font-semibold text-slate-500 border-b-2 border-transparent";
+
+            if (tab === 'teachers') {
+                document.getElementById('adminTabTeachers').classList.remove('hidden');
+                if (btnT) btnT.className = "px-4 py-2 text-xs font-semibold border-b-2 border-purple-600 text-purple-600";
+            } else if (tab === 'students') {
+                document.getElementById('adminTabStudents').classList.remove('hidden');
+                if (btnS) btnS.className = "px-4 py-2 text-xs font-semibold border-b-2 border-purple-600 text-purple-600";
+            } else if (tab === 'subjects') {
+                document.getElementById('adminTabSubjects').classList.remove('hidden');
+                if (btnSub) btnSub.className = "px-4 py-2 text-xs font-semibold border-b-2 border-purple-600 text-purple-600";
+            } else if (tab === 'reports') {
+                document.getElementById('adminTabReports').classList.remove('hidden');
+                if (btnRep) btnRep.className = "px-4 py-2 text-xs font-semibold border-b-2 border-purple-600 text-purple-600";
+                populateAdminReportFilters();
+            }
+        }
+
+        function generateAdminClassReports() {
+            const section = document.getElementById('adminReportSectionFilter').value;
+            const cls = document.getElementById('adminReportClassFilter').value;
+            const month = document.getElementById('adminReportMonthSelect').value;
+            const container = document.getElementById('adminClassReportsContainer');
+
+            const filteredStudents = students.filter(s => s.class === cls && (s.section === section || !s.section));
+
+            if (filteredStudents.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 bg-white rounded-2xl border border-slate-200">No students found in Class ${cls} (${section}).</div>`;
+                return;
+            }
+
+            const ratingScore = { "Advanced": 4, "Good": 3, "Acceptable": 2, "Followup-Needed": 1 };
+            const arabicRating = { "Advanced": "متقدم", "Good": "جيد", "Acceptable": "مقبول", "Followup-Needed": "يحتاج متابعة" };
+
+            container.innerHTML = filteredStudents.map((student, idx) => {
+                let totalSum = 0;
+                let totalCells = 0;
+                let acSum = 0, prSum = 0, hwSum = 0, bhSum = 0, orgSum = 0;
+
+                const subjectRows = subjects.map(sub => {
+                    const key = `${student.id}_${sub}_${month}`;
+                    const data = evaluations[key] || { ac: "Good", hw: "Good", pr: "Good", at: "Good", bh: "Good", cm: "Shows good understanding and steady progress. / يُظهر فهماً جيداً وتقدماً ثابتاً." };
+
+                    const acVal = ratingScore[data.ac] || 3;
+                    const prVal = ratingScore[data.pr] || 3;
+                    const hwVal = ratingScore[data.hw] || 3;
+                    const bhVal = ratingScore[data.bh] || 3;
+                    const atVal = ratingScore[data.at] || 3;
+                    const orgVal = Math.round((acVal + hwVal) / 2);
+
+                    acSum += acVal; prSum += prVal; hwSum += hwVal; bhSum += bhVal; orgSum += orgVal;
+
+                    const subAvg = ((acVal + prVal + hwVal + bhVal + orgVal) / 5).toFixed(2);
+                    totalSum += parseFloat(subAvg);
+                    totalCells++;
+
+                    return `
+                        <tr class="border-b border-slate-200">
+                            <td class="p-2.5 font-bold text-slate-900 border-r bg-slate-50/50">
+                                ${sub} <br><span class="text-[10px] text-slate-500 font-normal font-arabic">(${sub === 'Arabic' ? 'اللغة العربية' : sub === 'English' ? 'اللغة الإنجليزية' : sub === 'Math' ? 'الرياضيات' : 'العلوم'})</span>
+                            </td>
+                            <td class="p-2.5 border-r">${data.ac} <br><span class="text-[10px] text-slate-500 font-arabic">${arabicRating[data.ac] || ''}</span></td>
+                            <td class="p-2.5 border-r">${data.pr} <br><span class="text-[10px] text-slate-500 font-arabic">${arabicRating[data.pr] || ''}</span></td>
+                            <td class="p-2.5 border-r">${data.hw} <br><span class="text-[10px] text-slate-500 font-arabic">${arabicRating[data.hw] || ''}</span></td>
+                            <td class="p-2.5 border-r">${data.bh} <br><span class="text-[10px] text-slate-500 font-arabic">${arabicRating[data.bh] || ''}</span></td>
+                            <td class="p-2.5 border-r">Good <br><span class="text-[10px] text-slate-500 font-arabic">جيد</span></td>
+                            <td class="p-2.5 font-mono font-bold text-blue-900">${subAvg}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                const overallAvg = totalCells > 0 ? (totalSum / totalCells).toFixed(2) : "3.20";
+                const kpiAc = (acSum / subjects.length).toFixed(2);
+                const kpiPr = (prSum / subjects.length).toFixed(2);
+                const kpiHw = (hwSum / subjects.length).toFixed(2);
+                const kpiBh = (bhSum / subjects.length).toFixed(2);
+                const kpiOrg = (orgSum / subjects.length).toFixed(2);
+
+                let overallLabel = "Good (جيد)";
+                let badgeColor = "bg-blue-100 text-blue-800";
+                const avgNum = parseFloat(overallAvg);
+                if (avgNum >= 3.25) { overallLabel = "Advanced (متقدم)"; badgeColor = "bg-emerald-100 text-emerald-800"; }
+                else if (avgNum >= 2.5) { overallLabel = "Good (جيد)"; badgeColor = "bg-blue-100 text-blue-800"; }
+                else if (avgNum >= 1.75) { overallLabel = "Acceptable (مقبول)"; badgeColor = "bg-amber-100 text-amber-800"; }
+                else { overallLabel = "Follow-up needed (يحتاج متابعة)"; badgeColor = "bg-rose-100 text-rose-800"; }
+
+                let topStrengths = "";
+                let followup = "";
+                let comments = "";
+
+                subjects.forEach(sub => {
+                    const key = `${student.id}_${sub}_${month}`;
+                    const data = evaluations[key] || { ac: "Good", hw: "Good", pr: "Good", at: "Good", bh: "Good", cm: "Shows good understanding and steady progress. / يُظهر فهماً جيداً وتقدماً ثابتاً." };
+                    if (data.ac === "Advanced" || data.pr === "Advanced" || data.hw === "Advanced") {
+                        topStrengths += `<div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600 text-[10px]"></i><span><strong>${sub}:</strong> Rated Advanced (متقدم)</span></div>`;
+                    }
+                    if (data.ac === "Followup-Needed" || data.hw === "Followup-Needed" || data.pr === "Followup-Needed") {
+                        followup += `<div class="flex items-center gap-2"><i class="fa-solid fa-circle-exclamation text-amber-600 text-[10px]"></i><span><strong>${sub}:</strong> Requires follow-up support.</span></div>`;
+                    }
+                    comments += `
+                        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                            <div class="flex justify-between font-bold text-xs"><span>${sub}</span><span class="text-blue-700 font-mono">${data.ac}</span></div>
+                            <p class="text-[11px] text-slate-600 italic mt-0.5">${data.cm}</p>
+                        </div>
+                    `;
+                });
+
+                if (!topStrengths) topStrengths = `<div class="text-slate-600">Consistent performance across all subjects.</div>`;
+                if (!followup) followup = `<div class="text-slate-600 font-medium">No area requires follow-up this month.</div>`;
+
+                return `
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-300 p-6 sm:p-8 space-y-6 text-slate-800 font-sans mb-8 ${idx > 0 ? 'page-break-before' : ''}">
+                        <div class="border-b-2 border-blue-900 pb-4 flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-14 h-14 bg-blue-900 text-white rounded-xl flex items-center justify-center font-black text-sm tracking-widest shadow">IGS</div>
+                                <div>
+                                    <h3 class="font-black text-base text-blue-900 tracking-wide uppercase">Sama Onaizah International School</h3>
+                                    <p class="text-xs font-bold text-slate-600">${section}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <h4 class="font-black text-base text-slate-900">Monthly Student Evaluation Report</h4>
+                                <p class="text-xs font-bold text-slate-600 font-arabic">تقرير التقييم الشهري للطالب</p>
+                                <p class="text-xs font-semibold text-blue-700 mt-1">${month}</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+                            <div><span class="block text-[10px] text-slate-500 font-semibold uppercase">Student الطالب</span><span class="font-bold text-slate-900 text-sm">${student.name}</span></div>
+                            <div><span class="block text-[10px] text-slate-500 font-semibold uppercase">Class الصف</span><span class="font-bold text-slate-900 text-sm">${student.class}</span></div>
+                            <div><span class="block text-[10px] text-slate-500 font-semibold uppercase">Overall Level المستوى العام</span><span class="inline-block mt-0.5 px-2 py-0.5 rounded text-xs font-bold ${badgeColor}">${overallLabel}</span></div>
+                            <div><span class="block text-[10px] text-slate-500 font-semibold uppercase">Overall Average الدرجة</span><span class="font-bold text-slate-900 text-sm font-mono">${overallAvg}</span></div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">1. Level by subject and KPI <span class="text-slate-500 font-normal font-arabic ml-1">المستوى حسب المادة والمؤشر</span></h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs text-left border border-slate-200 rounded-lg">
+                                    <thead class="bg-blue-900 text-white font-semibold">
+                                        <tr>
+                                            <th class="p-2.5 border-r border-blue-800">Subject <br><span class="text-[10px] font-normal font-arabic">المادة</span></th>
+                                            <th class="p-2.5 border-r border-blue-800">Academic <br><span class="text-[10px] font-normal font-arabic">التحصيل الأكاديمي</span></th>
+                                            <th class="p-2.5 border-r border-blue-800">Participation <br><span class="text-[10px] font-normal font-arabic">المشاركة والتفاعل</span></th>
+                                            <th class="p-2.5 border-r border-blue-800">Assignments <br><span class="text-[10px] font-normal font-arabic">الواجبات والمهام</span></th>
+                                            <th class="p-2.5 border-r border-blue-800">Behavior <br><span class="text-[10px] font-normal font-arabic">السلوك والانضباط</span></th>
+                                            <th class="p-2.5 border-r border-blue-800">Organization <br><span class="text-[10px] font-normal font-arabic">التنظيم</span></th>
+                                            <th class="p-2.5">Average <br><span class="text-[10px] font-normal font-arabic">الدرجة</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 font-medium">${subjectRows}</tbody>
+                                    <tfoot class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
+                                        <tr>
+                                            <td class="p-2.5 border-r text-blue-900">KPI average <span class="font-arabic font-normal text-[10px]">متوسط المؤشر</span></td>
+                                            <td class="p-2.5 border-r font-mono">${kpiAc}</td>
+                                            <td class="p-2.5 border-r font-mono">${kpiPr}</td>
+                                            <td class="p-2.5 border-r font-mono">${kpiHw}</td>
+                                            <td class="p-2.5 border-r font-mono">${kpiBh}</td>
+                                            <td class="p-2.5 border-r font-mono">${kpiOrg}</td>
+                                            <td class="p-2.5 font-mono text-blue-900">${overallAvg}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-emerald-50/50 border border-emerald-200 p-4 rounded-xl space-y-2">
+                                <h4 class="font-bold text-xs text-emerald-900 flex items-center gap-1.5"><i class="fa-solid fa-award text-emerald-600"></i><span>2. Top Strengths <span class="font-arabic font-normal text-slate-600">نقاط القوة</span></span></h4>
+                                <div class="text-xs text-slate-700 space-y-1">${topStrengths}</div>
+                            </div>
+                            <div class="bg-amber-50/50 border border-amber-200 p-4 rounded-xl space-y-2">
+                                <h4 class="font-bold text-xs text-amber-900 flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i><span>3. Areas Needing Follow-up <span class="font-arabic font-normal text-slate-600">مجالات تحتاج إلى متابعة</span></span></h4>
+                                <div class="text-xs text-slate-700 space-y-1">${followup}</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">4. Subject Comments <span class="text-slate-500 font-normal font-arabic ml-1">ملاحظات المواد</span></h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${comments}</div>
+                        </div>
+
+                        <div class="pt-6 border-t border-slate-200 space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                                <div class="border-b sm:border-b-0 sm:border-r border-slate-200 pb-3 sm:pb-0 sm:pr-3">
+                                    <span class="block text-slate-500 font-medium">Guardian suggestions <span class="font-arabic">مقترحات ولي الأمر</span></span>
+                                    <div class="h-12 border border-dashed border-slate-300 rounded-lg mt-1 p-1 bg-slate-50/50"></div>
+                                </div>
+                                <div class="border-b sm:border-b-0 sm:border-r border-slate-200 pb-3 sm:pb-0 sm:pr-3">
+                                    <span class="block text-slate-500 font-medium">Guardian signature <span class="font-arabic">توقيع ولي الأمر</span></span>
+                                    <div class="h-12 border border-b-2 border-slate-300 rounded-b-lg mt-1 flex items-end px-2 pb-1 text-slate-400">Sign here...</div>
+                                </div>
+                                <div>
+                                    <span class="block text-slate-500 font-medium">Date <span class="font-arabic">التاريخ</span></span>
+                                    <span class="font-bold text-slate-800 mt-2 block">October 13, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            window.print();
+        }
+
+        function loadTeacherEvaluationMatrix() {
+            if (!currentActiveTeacher) return;
+            const classVal = document.getElementById('teacherClassFilter').value;
+            const month = document.getElementById('evalMonthSelect').value;
+            const tbody = document.getElementById('evaluationMatrixBody');
+
+            const classStudents = students.filter(s => s.class === classVal);
+
+            if (classStudents.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500">No students enrolled in Class ${classVal}. Add students via Admin Dashboard.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = classStudents.map(student => {
+                const key = `${student.id}_${currentActiveTeacher.subject}_${month}`;
+                const data = evaluations[key] || { ac: "Good", hw: "Good", pr: "Good", at: "Good", bh: "Good", cm: "" };
+
+                const opts = (val) => `
+                    <option value="Advanced" ${val === 'Advanced' ? 'selected' : ''}>Advanced (متقدم)</option>
+                    <option value="Good" ${val === 'Good' ? 'selected' : ''}>Good (جيد)</option>
+                    <option value="Acceptable" ${val === 'Acceptable' ? 'selected' : ''}>Acceptable (مقبول)</option>
+                    <option value="Followup-Needed" ${val === 'Followup-Needed' ? 'selected' : ''}>Follow-up (يحتاج متابعة)</option>
+                `;
+
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-semibold text-slate-800">${student.name}</td>
+                        <td class="p-2"><select data-sid="${student.id}" class="eval-input px-2 py-1 rounded border text-xs bg-white w-full">${opts(data.ac)}</select></td>
+                        <td class="p-2"><select data-sid="${student.id}" class="eval-input px-2 py-1 rounded border text-xs bg-white w-full">${opts(data.hw)}</select></td>
+                        <td class="p-2"><select data-sid="${student.id}" class="eval-input px-2 py-1 rounded border text-xs bg-white w-full">${opts(data.pr)}</select></td>
+                        <td class="p-2"><select data-sid="${student.id}" class="eval-input px-2 py-1 rounded border text-xs bg-white w-full">${opts(data.at)}</select></td>
+                        <td class="p-2"><select data-sid="${student.id}" class="eval-input px-2 py-1 rounded border text-xs bg-white w-full">${opts(data.bh)}</select></td>
+                        <td class="p-2">
+                            <input type="text" data-sid="${student.id}" value="${data.cm}" placeholder="Add subject comment..." class="eval-input px-2 py-1 rounded border text-xs w-full">
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function saveTeacherEvaluations() {
+            if (!currentActiveTeacher) return;
+            const month = document.getElementById('evalMonthSelect').value;
+            const rows = document.querySelectorAll('#evaluationMatrixBody tr');
+
+            rows.forEach(row => {
+                const selects = row.querySelectorAll('select.eval-input');
+                const inputs = row.querySelectorAll('input.eval-input');
+                if (selects.length === 0) return;
+
+                const studentId = selects[0].getAttribute('data-sid');
+                const entry = {
+                    ac: selects[0].value,
+                    hw: selects[1].value,
+                    pr: selects[2].value,
+                    at: selects[3].value,
+                    bh: selects[4].value,
+                    cm: inputs[0] ? inputs[0].value : ""
+                };
+
+                const key = `${studentId}_${currentActiveTeacher.subject}_${month}`;
+                evaluations[key] = entry;
+            });
+
+            saveData();
+            alert('Evaluations saved successfully for all students in this class.');
+        }
+
+        // Student Report Card & Diagram matching PDF Layout
+        function renderStudentReportCard() {
+            if (!currentActiveStudent) return;
+            const monthSelect = document.getElementById('reportMonthSelect');
+            const month = monthSelect.value;
+            document.getElementById('repMonthNameDisplay').innerText = monthSelect.options[monthSelect.selectedIndex].text;
+            document.getElementById('repStudentSchoolBranch').innerText = currentActiveStudent.section || schoolBranches[0];
+
+            const tbody = document.getElementById('reportTableBody');
+            const tfoot = document.getElementById('reportTableFoot');
+
+            const ratingScore = { "Advanced": 4, "Good": 3, "Acceptable": 2, "Followup-Needed": 1 };
+            const arabicRating = { "Advanced": "متقدم", "Good": "جيد", "Acceptable": "مقبول", "Followup-Needed": "يحتاج متابعة" };
+
+            let totalSum = 0;
+            let totalCells = 0;
+            let acSum = 0, prSum = 0, hwSum = 0, bhSum = 0, orgSum = 0;
+
+            const subjectRowsHtml = subjects.map(sub => {
+                const key = `${currentActiveStudent.id}_${sub}_${month}`;
+                const data = evaluations[key] || { ac: "Good", hw: "Good", pr: "Good", at: "Good", bh: "Good", cm: "Shows good understanding and steady progress. / يُظهر فهماً جيداً وتقدماً ثابتاً." };
+
+                const acVal = ratingScore[data.ac] || 3;
+                const prVal = ratingScore[data.pr] || 3;
+                const hwVal = ratingScore[data.hw] || 3;
+                const bhVal = ratingScore[data.bh] || 3;
+                const atVal = ratingScore[data.at] || 3;
+                const orgVal = Math.round((acVal + hwVal) / 2); // Derived organization indicator
+
+                acSum += acVal; prSum += prVal; hwSum += hwVal; bhSum += bhVal; orgSum += orgVal;
+
+                const subAvg = ((acVal + prVal + hwVal + bhVal + orgVal) / 5).toFixed(2);
+                totalSum += parseFloat(subAvg);
+                totalCells++;
+
+                return `
+                    <tr class="border-b border-slate-200 hover:bg-slate-50">
+                        <td class="p-2.5 font-bold text-slate-900 border-r bg-slate-50/50">
+                            ${sub} <br><span class="text-[10px] text-slate-500 font-normal font-arabic">(${sub === 'Arabic' ? 'اللغة العربية' : sub === 'English' ? 'اللغة الإنجليزية' : sub === 'Math' ? 'الرياضيات' : 'العلوم'})</span>
+                        </td>
+                        <td class="p-2.5 border-r">${data.ac} <br><span class="text-[10px] text-slate-500 font-arabic">${arabicRating[data.ac] || ''}</span></td>
+                        <td class="p-2.5 border-r">${data.pr} <br><span class="text-[10px] text-slate-500 font-arabic">${arabicRating[data.pr] || ''}</span></td>
+                        <td class="p-2.5 border-r">${data.hw} <br><span class="text-[10px] text-slate-500 font-arabic">${arabicRating[data.hw] || ''}</span></td>
+                        <td class="p-2.5 border-r">${data.bh} <br><span class="text-[10px] text-slate-500 font-arabic">${arabicRating[data.bh] || ''}</span></td>
+                        <td class="p-2.5 border-r">Good <br><span class="text-[10px] text-slate-500 font-arabic">جيد</span></td>
+                        <td class="p-2.5 font-mono font-bold text-blue-900">${subAvg}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            tbody.innerHTML = subjectRowsHtml;
+
+            const overallAvg = totalCells > 0 ? (totalSum / totalCells).toFixed(2) : "3.20";
+            const kpiAc = (acSum / subjects.length).toFixed(2);
+            const kpiPr = (prSum / subjects.length).toFixed(2);
+            const kpiHw = (hwSum / subjects.length).toFixed(2);
+            const kpiBh = (bhSum / subjects.length).toFixed(2);
+            const kpiOrg = (orgSum / subjects.length).toFixed(2);
+
+            tfoot.innerHTML = `
+                <tr>
+                    <td class="p-2.5 border-r text-blue-900">KPI average <span class="font-arabic font-normal text-[10px]">متوسط المؤشر</span></td>
+                    <td class="p-2.5 border-r font-mono">${kpiAc}</td>
+                    <td class="p-2.5 border-r font-mono">${kpiPr}</td>
+                    <td class="p-2.5 border-r font-mono">${kpiHw}</td>
+                    <td class="p-2.5 border-r font-mono">${kpiBh}</td>
+                    <td class="p-2.5 border-r font-mono">${kpiOrg}</td>
+                    <td class="p-2.5 font-mono text-blue-900">${overallAvg}</td>
+                </tr>
+            `;
+
+            // Determine Overall Level Label
+            let overallLabel = "Good (جيد)";
+            let badgeColor = "bg-blue-100 text-blue-800";
+            const avgNum = parseFloat(overallAvg);
+            if (avgNum >= 3.25) { overallLabel = "Advanced (متقدم)"; badgeColor = "bg-emerald-100 text-emerald-800"; }
+            else if (avgNum >= 2.5) { overallLabel = "Good (جيد)"; badgeColor = "bg-blue-100 text-blue-800"; }
+            else if (avgNum >= 1.75) { overallLabel = "Acceptable (مقبول)"; badgeColor = "bg-amber-100 text-amber-800"; }
+            else { overallLabel = "Follow-up needed (يحتاج متابعة)"; badgeColor = "bg-rose-100 text-rose-800"; }
+
+            document.getElementById('repOverallLevelBadge').innerText = overallLabel;
+            document.getElementById('repOverallLevelBadge').className = `inline-block mt-0.5 px-2 py-0.5 rounded text-xs font-bold ${badgeColor}`;
+            document.getElementById('repOverallAvgScore').innerText = overallAvg;
+
+            // Render Top Strengths & Follow-up Items
+            let topStrengthsHtml = "";
+            let followupHtml = "";
+            let commentsHtml = "";
+
+            subjects.forEach(sub => {
+                const key = `${currentActiveStudent.id}_${sub}_${month}`;
+                const data = evaluations[key] || { ac: "Good", hw: "Good", pr: "Good", at: "Good", bh: "Good", cm: "Shows good understanding and steady progress. / يُظهر فهماً جيداً وتقدماً ثابتاً." };
+
+                if (data.ac === "Advanced" || data.pr === "Advanced" || data.hw === "Advanced") {
+                    topStrengthsHtml += `<div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600 text-[10px]"></i><span><strong>${sub}:</strong> Assignments / Participation Rated Advanced (متقدم)</span></div>`;
+                }
+
+                if (data.ac === "Followup-Needed" || data.hw === "Followup-Needed" || data.pr === "Followup-Needed") {
+                    followupHtml += `<div class="flex items-center gap-2"><i class="fa-solid fa-circle-exclamation text-amber-600 text-[10px]"></i><span><strong>${sub}:</strong> Requires additional revision and homework support.</span></div>`;
+                }
+
+                commentsHtml += `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-800">
+                            <span>${sub}</span>
+                            <span class="text-blue-700 font-mono text-[11px]">${data.ac}</span>
+                        </div>
+                        <p class="text-[11px] text-slate-600 italic">${data.cm}</p>
+                    </div>
+                `;
+            });
+
+            if (!topStrengthsHtml) {
+                topStrengthsHtml = `<div class="text-slate-600">Consistent performance across all subjects with stable progress.</div>`;
+            }
+            if (!followupHtml) {
+                followupHtml = `<div class="text-slate-600 font-medium">No area is rated Acceptable or below. No follow-up items this month.<br><span class="font-arabic text-xs font-normal">لا توجد مجالات تحتاج إلى متابعة هذا الشهر.</span></div>`;
+            }
+
+            document.getElementById('repTopStrengthsList').innerHTML = topStrengthsHtml;
+            document.getElementById('repFollowupList').innerHTML = followupHtml;
+            document.getElementById('repSubjectCommentsGrid').innerHTML = commentsHtml;
+
+            renderPerformanceChart(currentActiveStudent.id);
+        }
+
+        function renderPerformanceChart(studentId) {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const months = ["2026-09 (Sep)", "2026-10 (Oct)", "2026-11 (Nov)", "2026-12 (Dec)"];
+            
+            const ratingScore = { "Advanced": 4, "Good": 3, "Acceptable": 2, "Followup-Needed": 1, "Not Evaluated": 0 };
+
+            const monthlyScores = months.map(m => {
+                let total = 0;
+                let count = 0;
+                subjects.forEach(sub => {
+                    const key = `${studentId}_${sub}_${m}`;
+                    if (evaluations[key]) {
+                        total += ratingScore[evaluations[key].ac] || 3;
+                        count++;
+                    }
+                });
+                return count > 0 ? (total / count).toFixed(2) : (3.20);
+            });
+
+            if (performanceChartInstance) {
+                performanceChartInstance.destroy();
+            }
+
+            performanceChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ["September", "October", "November", "December"],
+                    datasets: [{
+                        label: 'Overall Academic Performance Level (Average)',
+                        data: monthlyScores,
+                        borderColor: '#1e3a8a',
+                        backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 1,
+                            max: 4,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    const labels = { 4: 'Advanced', 3: 'Good', 2: 'Acceptable', 1: 'Follow-up' };
+                                    return labels[value] || '';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
